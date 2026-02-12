@@ -1,5 +1,11 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import '../types'; // Import global types
+
+// Declare window.confetti locally to satisfy TypeScript compiler
+declare global {
+  interface Window {
+    confetti: any;
+  }
+}
 
 export const ValentineCard: React.FC = () => {
   const [accepted, setAccepted] = useState(false);
@@ -40,10 +46,6 @@ export const ValentineCard: React.FC = () => {
   }, [hasRunAway, accepted]);
 
   const handleNoInteraction = useCallback((e: React.MouseEvent | React.TouchEvent) => {
-    // Prevent default behavior to stop any weird double-firing on touch
-    // e.preventDefault(); // Sometimes this blocks clicks, be careful. 
-    // Usually safe to omit if just moving.
-
     // 1. Trigger Confetti
     let clientX, clientY;
     if ('touches' in e) {
@@ -57,15 +59,17 @@ export const ValentineCard: React.FC = () => {
     const xOrigin = clientX / window.innerWidth;
     const yOrigin = clientY / window.innerHeight;
 
-    window.confetti({
-      particleCount: 20,
-      spread: 50,
-      origin: { x: xOrigin, y: yOrigin },
-      colors: ['#ff69b4', '#ddffe4', '#ffeb3b', '#a5d8ff'],
-      scalar: 0.6,
-      startVelocity: 15,
-      ticks: 60
-    });
+    if (window.confetti) {
+      window.confetti({
+        particleCount: 20,
+        spread: 50,
+        origin: { x: xOrigin, y: yOrigin },
+        colors: ['#ff69b4', '#ddffe4', '#ffeb3b', '#a5d8ff'],
+        scalar: 0.6,
+        startVelocity: 15,
+        ticks: 60
+      });
+    }
 
     // 2. Run Away Logic
     setHasRunAway(true);
@@ -84,20 +88,22 @@ export const ValentineCard: React.FC = () => {
     const end = Date.now() + duration;
 
     const frame = () => {
-      window.confetti({
-        particleCount: 5,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: ['#ff69b4', '#ddffe4', '#ffeb3b', '#a5d8ff']
-      });
-      window.confetti({
-        particleCount: 5,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: ['#ff69b4', '#ddffe4', '#ffeb3b', '#a5d8ff']
-      });
+      if (window.confetti) {
+        window.confetti({
+          particleCount: 5,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: ['#ff69b4', '#ddffe4', '#ffeb3b', '#a5d8ff']
+        });
+        window.confetti({
+          particleCount: 5,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: ['#ff69b4', '#ddffe4', '#ffeb3b', '#a5d8ff']
+        });
+      }
 
       if (Date.now() < end) {
         requestAnimationFrame(frame);
