@@ -1,38 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Amanda's Valentine Shiba</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <style>
-      body {
-        font-family: 'Fredoka', sans-serif;
-      }
-      @keyframes rainbow-flash {
-        0% { filter: hue-rotate(0deg) brightness(1.1); transform: scale(1); }
-        25% { filter: hue-rotate(90deg) brightness(1.2); transform: scale(1.05); }
-        50% { filter: hue-rotate(180deg) brightness(1.1); transform: scale(1); }
-        75% { filter: hue-rotate(270deg) brightness(1.2); transform: scale(1.05); }
-        100% { filter: hue-rotate(360deg) brightness(1.1); transform: scale(1); }
-      }
-      .shiba-party {
-        animation: rainbow-flash 0.6s linear infinite;
-      }
-    </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.4",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "react/": "https://esm.sh/react@^19.2.4/"
-  }
-}
-</script>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Valentine Shiba</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- CSP 允许 eval / new Function -->
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval';">
+
+  <style>
+    body {
+      background-color: #ddffe4; /* 薄荷绿背景 */
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 弹窗样式 */
+    #popup {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      text-align: center;
+      padding: 20px;
+      position: relative;
+      width: 320px;
+    }
+
+    #popup img {
+      width: 150px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+
+    #popup button {
+      margin: 0 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s ease;
+    }
+
+    #popup #yes {
+      background-color: #34d399; /* 绿色 */
+      color: white;
+    }
+
+    #popup #no {
+      background-color: #f87171; /* 红色 */
+      color: white;
+      position: relative;
+    }
+
+    #message {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #2563eb; /* 蓝色 */
+    }
+  </style>
 </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<body>
+
+<div id="popup">
+  <img id="shiba" src="shiba.png" alt="Shiba Inu">
+  <p>Amanda, will you be my valentine?</p>
+  <div>
+    <button id="yes">Yes</button>
+    <button id="no">No</button>
+  </div>
+  <div id="message"></div>
+</div>
+
+<script>
+  const noBtn = document.getElementById('no');
+  const yesBtn = document.getElementById('yes');
+  const shiba = document.getElementById('shiba');
+  const message = document.getElementById('message');
+
+  // No 按钮躲避鼠标
+  noBtn.addEventListener('mouseenter', () => {
+    const x = Math.random() * (window.innerWidth - 100);
+    const y = Math.random() * (window.innerHeight - 100);
+    noBtn.style.position = 'absolute';
+    noBtn.style.left = x + 'px';
+    noBtn.style.top = y + 'px';
+  });
+
+  // Yes 按钮点击事件
+  yesBtn.addEventListener('click', () => {
+    // 五颜六色闪烁
+    let colors = ['#f87171', '#fbbf24', '#34d399', '#60a5fa', '#a78bfa'];
+    let i = 0;
+    const flash = setInterval(() => {
+      shiba.style.filter = `drop-shadow(0 0 10px ${colors[i % colors.length]})`;
+      i++;
+    }, 200);
+
+    // 模拟烟花效果（简单彩色闪烁背景）
+    document.body.style.animation = 'fireworks 1s infinite';
+    const style = document.createElement('style');
+    style.innerHTML = `
+      @keyframes fireworks {
+        0% {background-color: #ddffe4;}
+        25% {background-color: #fef3c7;}
+        50% {background-color: #fbcfe8;}
+        75% {background-color: #c7d2fe;}
+        100% {background-color: #ddffe4;}
+      }
+    `;
+    document.head.appendChild(style);
+
+    // 显示消息
+    message.textContent = "Amanda, you've made a shiba very happy!";
+  });
+</script>
+
+</body>
 </html>
